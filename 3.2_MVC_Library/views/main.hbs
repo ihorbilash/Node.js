@@ -1,0 +1,134 @@
+{{>head}}
+
+<body data-gr-c-s-loaded="true" class="">
+    <section id="header" class="header-wrapper">
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="col-xs-5 col-sm-2 col-md-2 col-lg-2">
+                    <div class="logo"><a href="http://localhost:3000/" class="navbar-brand"><span
+                                class="plus">Library</span></a></div>
+                </div>
+                <div class="col-xs-12 col-sm-7 col-md-8 col-lg-8">
+                    <div class="main-menu">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <form class="navbar-form navbar-right">
+                                <div class="form-group">
+                                    <input id="search" type="text" placeholder="Найти книгу" class="form-control">
+                                    <script>
+                                        document.addEventListener("keypress", function (e) {
+                                            if (e.keyCode == 13 && '' !== document.getElementById("search").value) {
+                                                e.preventDefault();
+                                                let val = document.getElementById("search").value;
+                                                window.location.href = `http://localhost:3000/?search=${val}`;
+                                            }
+                                        })
+                                    </script>
+
+
+                                    <div id="list" size="" class="bAutoComplete mSearchAutoComplete"></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="social">
+                        <button onclick="logout()" class="btn" style="display:none ;" id="logout">Logout</button>
+                        <script>
+                            if (window.location.href === 'http://localhost:3000/admin') {
+                                document.getElementById('logout').style.display = "inline-block";
+                            }
+                            function logout() {
+                                const auth = btoa('username' + ":" + 'password')
+                                fetch('http://localhost:3000/admin', {
+                                    method: 'GET',
+                                    headers: {
+                                        'Content-Type': 'text/json',
+                                        'Authorization': 'Basic' + auth
+                                    }
+                                })
+                                    .then(response => {
+                                        if (!response.ok) throw new Error(response.status);
+                                        return response.json();
+                                    });
+                            }
+                        </script>
+                    </div>
+                </div>
+        </nav>
+    </section>
+    <section id="main" class="main-wrapper">
+        <div class="container">
+            {{>books}}
+        </div>
+        {{#if books}}
+        <center>
+            <!--display the link to the pages-->
+            <div style="display:flex; justify-content:center">
+                <button onclick="selectPage('-',{{pages.length}})" id="prev" class="page-number">
+                    < </button>
+                        {{#each pages}}
+                        <a href="/?page={{page}}">
+                            <div class="page-number">{{page}}</div>
+                        </a>
+                        {{/each}}
+
+                        <button onclick="selectPage('+',{{pages.length}})" id="next" class="page-number"> > </button>
+            </div>
+            <script>
+                function selectPage(mark, length) {
+                    let curentHref = window.location.href;
+                    curentHref = curentHref.substring(curentHref.length - 1);
+                    curentHref = isNaN(curentHref) ? 1 : Number(curentHref);
+                    const num = mark != '+' ? curentHref - 1 : curentHref + 1;
+                    if (num > 0 && num <= length) { window.location.href = `http://localhost:3000/?page=${num}`; }
+                }
+            </script>
+        </center>
+        {{/if}}
+        {{#if adminPage}}
+        {{>admin}}
+        {{/if}}
+        {{#if error}}
+        {{>error}}
+        {{/if}}
+    </section>
+    {{>footer}}
+    </section>
+    <div class="sweet-overlay" tabindex="-1" style="opacity: -0.02; display: none;"></div>
+    <div class="sweet-alert hideSweetAlert" data-custom-class="" data-has-cancel-button="false"
+        data-has-confirm-button="true" data-allow-outside-click="false" data-has-done-function="false"
+        data-animation="pop" data-timer="null" style="display: none; margin-top: -169px; opacity: -0.03;">
+        <div class="sa-icon sa-error" style="display: block;">
+            <span class="sa-x-mark">
+                <span class="sa-line sa-left"></span>
+                <span class="sa-line sa-right"></span>
+            </span>
+        </div>
+        <div class="sa-icon sa-warning" style="display: none;">
+            <span class="sa-body"></span>
+            <span class="sa-dot"></span>
+        </div>
+        <div class="sa-icon sa-info" style="display: none;"></div>
+        <div class="sa-icon sa-success" style="display: none;">
+            <span class="sa-line sa-tip"></span>
+            <span class="sa-line sa-long"></span>
+
+            <div class="sa-placeholder"></div>
+            <div class="sa-fix"></div>
+        </div>
+        <div class="sa-icon sa-custom" style="display: none;"></div>
+        <h2>Ооопс!</h2>
+        <p style="display: block;">Ошибка error</p>
+        <fieldset>
+            <input type="text" tabindex="3" placeholder="">
+            <div class="sa-input-error"></div>
+        </fieldset>
+        <div class="sa-error-container">
+            <div class="icon">!</div>
+            <p>Not valid!</p>
+        </div>
+    </div>
+</body>
+
+</html>

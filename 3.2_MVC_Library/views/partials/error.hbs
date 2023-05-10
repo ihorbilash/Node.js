@@ -1,0 +1,21 @@
+<div class="alert alert-success" role="alert">
+  <h4 class="alert-heading" style="text-align:center ;">Ошибка добавления новой книги!</h4>
+  <p style="text-align:center ;">Правильно заполните колонки для успешного добавления:<br />
+    Название книги = текст;<br />
+    Год издания = число;<br />
+    Колличество страниц = число;<br />
+    Описание = текст;<br />
+    Обязательно добавте хотя-бы одного автора;</p>
+  <hr>
+  <p class="mb-0" style="text-align:center ;">
+    Какие данные использовались:<br />
+    Имя книги = {{error.title}};<br />
+    Год = {{error.year}};<br />
+    Страниц = {{error.pages}};<br />
+    Описание = {{error.desc}};<br />
+    Автор 1 = {{error.author1}};<br />
+    Автор 2 = {{error.author2}}<br />
+    Автор 3 = {{error.author3}}
+  </p>
+</div>
+<center><button class="btn" onclick=" window.location.href ='http://localhost:3000/admin'"> Ок </button></center>

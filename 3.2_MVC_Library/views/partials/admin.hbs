@@ -1,0 +1,150 @@
+<div style="display:flex;">
+    <div>
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr class="active">
+                    <th>Название книги</th>
+                    <th>Авторы</th>
+                    <th>Год</th>
+                    <th>Действия</th>
+                    <th>Коликов</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each admin}}
+                <tr>
+                    <th contenteditable="true" id="title_{{b_id}}"
+                        oninput="document.getElementById('btnEdit{{b_id}}').style.display = 'block'">{{title}}</th>
+                    <th>{{author}}</th>
+                    <th contenteditable="true" id="year_{{b_id}}"
+                        oninput="document.getElementById('btnEdit{{b_id}}').style.display = 'block'">{{year}}</th>
+                    <th><button onclick="deleteBook({{b_id}})">Delete</button>
+                        <button id="btnEdit{{b_id}}" style="display:none;" onclick="saveEdit({{b_id}})">save
+                            edit</button>
+                    </th>
+                    <th>{{count_click}}</th>
+                </tr>
+                {{/each}}
+            </tbody>
+
+        </table>
+        <script>
+            function deleteBook(b_id) {
+                fetch('http://localhost:3000/admin', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    method: 'DELETE',
+                    body: JSON.stringify({ book_id: b_id })
+                }).then(res => res.json())
+                    .then((response) => {
+                        if (response['ok'] === true) {
+                            window.location.reload();
+                        } else {
+                            alert("Произошла ошибка. Посмотрите консоль разработчика чтоб увидеть подробности.")
+                        }
+                    });
+            }
+
+            function saveEdit(b_id) {
+                const title = document.getElementById(`title_${b_id}`).innerText;
+                const year = document.getElementById(`year_${b_id}`).innerText;
+                fetch('http://localhost:3000/admin', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    method: 'PUT',
+                    body: JSON.stringify({ b_id: b_id, title: title, year: year })
+                }).then(res => res.json())
+                    .then((response) => {
+                        if (response['ok'] === true) {
+                            window.location.reload();
+                        } else {
+                            alert("Произошла ошибка. Посмотрите консоль разработчика чтоб увидеть подробности.")
+                        }
+                    });
+            }
+
+        </script>
+        <!--display the link to the pages-->
+        <center>
+            <div style="display:flex; justify-content:center">
+                <button onclick="selectPageAdm('-',{{pages.length}})" id="prev" class="page-number">
+                    < </button>
+                        {{#each pages}}
+                        <a href="http://localhost:3000/admin/?page={{page}}">
+                            <div class="page-number">{{page}}</div>
+                        </a>
+                        {{/each}}
+                        <button onclick="selectPageAdm('+',{{pages.length}})" id="next" class="page-number"> > </button>
+            </div>
+        </center>
+        <script>
+            function selectPageAdm(mark, length) {
+                let curentHref = window.location.href;
+                curentHref = curentHref.substring(curentHref.length - 1);
+                curentHref = isNaN(curentHref) ? 1 : Number(curentHref);
+                const num = mark != '+' ? curentHref - 1 : curentHref + 1;
+                if (num > 0 && num <= length) { window.location.href = `http://localhost:3000/admin/?page=${num}`; }
+            }
+        </script>
+    </div>
+    <!-- separate owerhead block -information table, bottom block - add book -->
+    <div class="container">
+        <form enctype="multipart/form-data" method="post">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <input type="text" class="form-control" name="title" onchange="" placeholder="Название книги">
+                </div>
+                <div class="form-group col-md-6">
+                    <input type="text" class="form-control" name="author1" placeholder="Автор 1" list="authors">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <input type="text" class="form-control" name="year" placeholder="Год издания">
+                </div>
+                <div class="form-group col-md-6">
+                    <input type="text" class="form-control" name="author2" placeholder="Автор 2" list="authors">
+
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <input type="text" class="form-control" name="pages" placeholder="количество страниц">
+                </div>
+                <div class="form-group col-md-6" style="display:flex ;">
+                    <input type="text" class="form-control" name="author3" placeholder="Автор 3" list="authors">
+                </div>
+            </div>
+
+            <!-- set datalist -->
+            <datalist id="authors">
+                {{#each authors}}
+                <option value="{{author}}" />
+                {{/each}}
+            </datalist>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <input type="file" onchange="preview()" name="image" class="form-control">
+                    <img id="frame" src="" width="100px" height="150px" />
+                    <script>
+                        function preview() {
+                            frame.src = URL.createObjectURL(event.target.files[0]);
+                        }
+                    </script>
+                </div>
+                <div class="form-group col-md-6">
+                    <textarea name="desc" rows="8" cols="20" class="form-control" id="description"> </textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+
+
+    </div>
+    
+
+</div>
