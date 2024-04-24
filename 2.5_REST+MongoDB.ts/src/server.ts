@@ -10,7 +10,7 @@ import cors from 'cors'
 //const FileStore = require('session-file-store')(session)
 import connectionMongo from 'connect-mongodb-session'
 const MongoStore = connectionMongo(session);
-const URL = 'mongodb+srv://at_user:users@cluster0.mitc6.mongodb.net/myFirstDatabase'
+const URL = 'mongodb+srv://<user>:<pass>@cluster0.mitc6.mongodb.net'
 
 const app = express();
 const PORT = process.env.PORT || 3005;
