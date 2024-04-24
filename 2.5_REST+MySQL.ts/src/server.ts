@@ -17,8 +17,8 @@ app.use(express.static('static'));
 const sessionStore = new MySQLStore({
     host: "localhost",
     user: "root",
-    password: "11111111",
-    database: "klizma",
+    password: "*****",
+    database: "kl",
 })
 
 app.use(session({
